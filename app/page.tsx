@@ -422,7 +422,7 @@ export default function Home() {
     <div className="bg-[#FDFBF7] min-h-screen flex flex-col overflow-x-hidden">
       <section
         ref={heroRef}
-        className="relative w-full min-h-screen flex overflow-hidden bg-[#0C0A07]"
+        className="relative w-full min-h-[100dvh] lg:min-h-screen flex overflow-hidden bg-[#0C0A07]"
       >
         <FloatingOrb className="w-[700px] h-[700px] -bottom-40 -right-40 bg-amber-600/12 z-0" delay={0} />
         <FloatingOrb className="w-[400px] h-[400px] top-10 left-1/4 bg-amber-500/7 z-0" delay={3} />
@@ -468,7 +468,7 @@ export default function Home() {
                 fill
                 priority
                 crop="fill"
-                gravity="center"
+                gravity="auto"
                 className="object-cover object-center"
               />
             </motion.div>
@@ -478,7 +478,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
         </div>
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-14 flex flex-col lg:flex-row items-center min-h-screen gap-8 lg:gap-0">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-14 flex flex-col lg:flex-row items-center min-h-[100dvh] lg:min-h-screen gap-8 lg:gap-0">
           <motion.div
             className="flex flex-col justify-center w-full lg:w-[54%] xl:w-[52%] py-28 lg:py-0 lg:pr-12 xl:pr-20 text-center lg:text-left"
             style={{ opacity: heroOpacity }}

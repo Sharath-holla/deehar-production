@@ -232,8 +232,8 @@ export default function EventPage({ params }: { params: Promise<{ slug: string }
   return (
     <div className="min-h-screen pb-28 bg-[#FDFBF7]">
 
-      {/* ── Hero Slideshow ──────────────────────────────────────────────────── */}
-      <div className="relative w-full h-[60vh] md:h-[78vh] overflow-hidden bg-[#080604]">
+      {/* ── Hero Slideshow — h-[75dvh] uses dynamic viewport to fit mobile screens perfectly without bar shifts */}
+      <div className="relative w-full h-[75dvh] md:h-[78vh] overflow-hidden bg-[#080604]">
 
         <AnimatePresence mode="popLayout">
           <motion.div
@@ -262,8 +262,8 @@ export default function EventPage({ params }: { params: Promise<{ slug: string }
               />
             </div>
 
-            {/* Crisp foreground — full image, no crop */}
-            <div className="absolute inset-0 px-6 md:px-16 pb-28 md:pb-36 pt-10">
+            {/* Crisp foreground — full image, no crop. Optimized responsive margins */}
+            <div className="absolute inset-0 px-4 pb-36 pt-16 md:px-16 md:pb-36 md:pt-10">
               <CloudinaryImage
                 src={event.gallery[heroIndex] || event.coverImage}
                 alt={event.title}
