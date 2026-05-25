@@ -5,6 +5,9 @@ import { events, heroImages } from "@/lib/data";
 import Link from "next/link";
 import CloudinaryImage from "@/components/CloudinaryImage";
 import CloudinaryVideo from "@/components/CloudinaryVideo";
+import ThreeDCard from "@/components/ThreeDCard";
+import MagneticButton from "@/components/MagneticButton";
+import TextReveal from "@/components/TextReveal";
 import {
   Youtube,
   Mail,
@@ -137,86 +140,86 @@ export function ServiceCard({ event, index }: { event: any; index: number }) {
       variants={cardVariants}
       initial="hidden"
       animate={inView ? "show" : "hidden"}
-      whileHover={{ y: -10, scale: 1.015 }}
-      transition={{ type: "spring", stiffness: 400, damping: 20 }}
-      className="service-card h-full flex flex-col group relative overflow-hidden bg-white border border-gray-100 hover:border-amber-500/30 transition-all duration-500 shadow-sm hover:shadow-[0_22px_50px_rgba(201,122,6,0.12)] rounded-3xl"
+      className="h-full"
     >
-      <Link href={`/events/${event.slug}`} className="cursor-pointer h-full flex flex-col">
-        {/*
-          IMAGE RENDERING STRATEGY
-          ─────────────────────────────────────────────────────────────────────
-          Problem:  crop="fill" (Cloudinary) + object-cover (CSS) = DOUBLE CROP
-                    Both Cloudinary AND the browser clip the image → bad results
+      <ThreeDCard className="h-full" maxTilt={10}>
+        <Link href={`/events/${event.slug}`} className="cursor-pointer h-full flex flex-col service-card group relative overflow-hidden bg-white border border-gray-100/80 hover:border-amber-500/30 transition-all duration-500 shadow-sm hover:shadow-[0_24px_55px_rgba(201,122,6,0.12)] rounded-3xl">
+          {/*
+            IMAGE RENDERING STRATEGY
+            ─────────────────────────────────────────────────────────────────────
+            Problem:  crop="fill" (Cloudinary) + object-cover (CSS) = DOUBLE CROP
+                      Both Cloudinary AND the browser clip the image → bad results
 
-          Solution: crop="fit" (Cloudinary) + object-contain (CSS) = ZERO CROP
-                    Cloudinary scales the full image to fit within the box.
-                    The browser displays it without any clipping.
-                    Dark cinematic background fills the letterbox areas.
-          ─────────────────────────────────────────────────────────────────────
-        */}
-        <div
-          className="relative w-full overflow-hidden"
-          style={{
-            aspectRatio: "4 / 3",
-            background: "linear-gradient(160deg, #0f0d0a 0%, #1c1812 50%, #0d0b09 100%)",
-          }}
-        >
-          {/* Subtle ambient glow behind the image */}
+            Solution: crop="fit" (Cloudinary) + object-contain (CSS) = ZERO CROP
+                      Cloudinary scales the full image to fit within the box.
+                      The browser displays it without any clipping.
+                      Dark cinematic background fills the letterbox areas.
+            ─────────────────────────────────────────────────────────────────────
+          */}
           <div
-            className="absolute inset-0 z-0"
+            className="relative w-full overflow-hidden"
             style={{
-              background: "radial-gradient(ellipse at center, rgba(201,122,6,0.06) 0%, transparent 70%)",
+              aspectRatio: "4 / 3",
+              background: "linear-gradient(160deg, #0f0d0a 0%, #1c1812 50%, #0d0b09 100%)",
             }}
-            aria-hidden="true"
-          />
+          >
+            {/* Subtle ambient glow behind the image */}
+            <div
+              className="absolute inset-0 z-0"
+              style={{
+                background: "radial-gradient(ellipse at center, rgba(201,122,6,0.06) 0%, transparent 70%)",
+              }}
+              aria-hidden="true"
+            />
 
-          <CloudinaryImage
-            src={event.coverImage}
-            alt={event.title}
-            fill
-            crop="fit"
-            className="object-contain transition-transform duration-700 group-hover:scale-[1.04] z-[1]"
-            style={{ transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)", padding: "2px" }}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
+            <CloudinaryImage
+              src={event.coverImage}
+              alt={event.title}
+              fill
+              crop="fit"
+              className="object-contain transition-transform duration-700 group-hover:scale-[1.04] z-[1]"
+              style={{ transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)", padding: "2px" }}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
 
-          {/* Bottom gradient for text readability */}
-          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent z-[2]" />
+            {/* Bottom gradient for text readability */}
+            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent z-[2]" />
 
-          {/* Hover overlay */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500 z-[3]" />
+            {/* Hover overlay */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500 z-[3]" />
 
-          {/* Category pill — top left on hover */}
-          <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-all duration-400 translate-y-2 group-hover:translate-y-0 z-[4]">
-            <span className="text-white text-[0.6rem] font-bold tracking-[0.2em] uppercase bg-amber-600/85 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
-              {event.title}
-            </span>
+            {/* Category pill — top left on hover */}
+            <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-all duration-400 translate-y-2 group-hover:translate-y-0 z-[4]">
+              <span className="text-white text-[0.6rem] font-bold tracking-[0.2em] uppercase bg-amber-600/85 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
+                {event.title}
+              </span>
+            </div>
+
+            {/* View Gallery pill — center on hover */}
+            <div className="absolute inset-0 flex items-center justify-center z-[4]">
+              <span className="text-white text-[0.7rem] font-bold tracking-[0.22em] uppercase bg-black/40 backdrop-blur-md px-5 py-2 rounded-full border border-amber-500/30 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-3 group-hover:translate-y-0 shadow-[0_0_20px_rgba(201,122,6,0.3)]">
+                View Gallery
+              </span>
+            </div>
           </div>
-
-          {/* View Gallery pill — center on hover */}
-          <div className="absolute inset-0 flex items-center justify-center z-[4]">
-            <span className="text-white text-[0.7rem] font-bold tracking-[0.22em] uppercase bg-black/40 backdrop-blur-md px-5 py-2 rounded-full border border-amber-500/30 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-3 group-hover:translate-y-0 shadow-[0_0_20px_rgba(201,122,6,0.3)]">
-              View Gallery
-            </span>
+          <div className="p-6 text-center flex-grow flex flex-col justify-between relative z-10">
+            <div>
+              <h3
+                className="text-lg font-bold mb-2 text-gray-900 group-hover:text-amber-700 transition-colors duration-300"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                {event.title}
+              </h3>
+              <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{event.shortDesc}</p>
+            </div>
+            <div className="mt-4 flex justify-center">
+              <span className="inline-flex items-center text-amber-600 text-[0.72rem] font-bold tracking-widest uppercase gap-1.5 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                Explore <ArrowRight size={12} />
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="p-6 text-center flex-grow flex flex-col justify-between relative z-10">
-          <div>
-            <h3
-              className="text-lg font-bold mb-2 text-gray-900 group-hover:text-amber-700 transition-colors duration-300"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              {event.title}
-            </h3>
-            <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{event.shortDesc}</p>
-          </div>
-          <div className="mt-4 flex justify-center">
-            <span className="inline-flex items-center text-amber-600 text-[0.72rem] font-bold tracking-widest uppercase gap-1.5 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-              Explore <ArrowRight size={12} />
-            </span>
-          </div>
-        </div>
-      </Link>
+        </Link>
+      </ThreeDCard>
     </motion.div>
   );
 }
@@ -491,21 +494,20 @@ export default function Home() {
                 </span>
               </motion.div>
 
-              <motion.h1
-                variants={itemVariants}
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-6xl xl:text-[4.5rem] font-bold text-white mb-6 leading-[1.06] tracking-tight"
+              <h1
+                className="text-5xl sm:text-6xl md:text-7xl lg:text-6xl xl:text-[4.5rem] font-bold text-white mb-6 leading-[1.06] tracking-tight flex flex-col items-center lg:items-start"
                 style={{ fontFamily: "'Playfair Display', serif" }}
               >
-                Capturing Life&apos;s{" "}
+                <TextReveal text="Capturing Life&apos;s" delay={0.25} wordDelay={0.06} />
                 <motion.span
                   className="gradient-text-amber italic block"
-                  initial={{ opacity: 0, x: -14 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.8, duration: 0.8 }}
+                  initial={{ opacity: 0, x: -16, filter: "blur(6px)" }}
+                  animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                  transition={{ delay: 0.75, duration: 0.9, ease: CB }}
                 >
                   Best Moments
                 </motion.span>
-              </motion.h1>
+              </h1>
 
               <motion.div
                 variants={itemVariants}
@@ -522,26 +524,26 @@ export default function Home() {
 
               <motion.div
                 variants={itemVariants}
-                className="flex flex-col sm:flex-row gap-3.5 justify-center lg:justify-start mb-14 w-full sm:w-auto"
+                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-14 w-full sm:w-auto items-center"
               >
-                <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
+                <MagneticButton>
                   <Link
                     href="/#services"
-                    className="hero-btn-primary inline-flex items-center justify-center gap-2.5 w-full sm:w-auto"
+                    className="hero-btn-primary inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-8 py-4 rounded-full"
                   >
                     <Camera size={15} />
                     View Our Work
                   </Link>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }}>
+                </MagneticButton>
+                <MagneticButton>
                   <Link
                     href="/#contact"
-                    className="hero-btn-ghost inline-flex items-center justify-center gap-2 w-full sm:w-auto"
+                    className="hero-btn-ghost inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 rounded-full"
                   >
                     Book a Session
                     <ArrowRight size={14} />
                   </Link>
-                </motion.div>
+                </MagneticButton>
               </motion.div>
 
               <motion.div
