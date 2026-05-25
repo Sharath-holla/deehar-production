@@ -21,123 +21,55 @@ const navLinks = [
 ────────────────────────────────────────────────────────────── */
 function Logo({ scrolled }: { scrolled: boolean }) {
   const [imgError, setImgError] = useState(false);
-  const containerRef = useRef<HTMLAnchorElement>(null);
-
-  // 3D rotation vectors
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  // High-performance spring physics for buttery smooth motion
-  const rotateX = useSpring(useTransform(y, [-40, 40], [16, -16]), { stiffness: 160, damping: 14 });
-  const rotateY = useSpring(useTransform(x, [-40, 40], [-16, 16]), { stiffness: 160, damping: 14 });
-
-  // Dynamic light/reflection shine sweep
-  const shineX = useSpring(useTransform(x, [-40, 40], ["-150%", "150%"]), { stiffness: 160, damping: 14 });
-
-  // Dynamic shadow casting that matches the tilt direction
-  const shadowX = useTransform(x, [-40, 40], [6, -6]);
-  const shadowY = useTransform(y, [-40, 40], [6, -6]);
-
-  const handleMouseMove = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const mouseX = ((event.clientX - rect.left) / rect.width - 0.5) * 80;
-    const mouseY = ((event.clientY - rect.top) / rect.height - 0.5) * 80;
-    x.set(mouseX);
-    y.set(mouseY);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
 
   return (
-    <Link
-      href="/"
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="flex items-center gap-3.5 group relative"
-      aria-label="Deehar Productions Home"
-      style={{ perspective: 1000 }}
-    >
-      {/* 3D Rotating Badge Wrapper */}
+    <Link href="/" className="flex items-center gap-3 group animate-fade-in" aria-label="Deehar Productions Home">
       <motion.div
-        style={{
-          rotateX,
-          rotateY,
-          transformStyle: "preserve-3d",
-        }}
-        className="flex items-center gap-3.5"
+        className="relative flex-shrink-0"
+        whileHover={{ scale: 1.05, rotate: 1 }}
+        whileTap={{ scale: 0.96 }}
+        transition={{ type: "spring", stiffness: 300, damping: 18 }}
       >
-        
-        {/* ── Logo Icon Container ── */}
-        <motion.div
-          className="relative flex-shrink-0 relative overflow-hidden rounded-xl bg-white/4 border border-white/10 p-1 flex items-center justify-center shadow-2xl transition-all duration-300"
-          style={{
-            transform: "translateZ(30px)",
-            transformStyle: "preserve-3d",
-            boxShadow: `0 10px 30px rgba(0,0,0,0.65)`,
-          }}
-        >
-          {/* Metallic gloss sheen effect sliding across */}
-          <motion.div
-            className="absolute inset-y-0 w-[50%] skew-x-[-25deg] bg-gradient-to-r from-transparent via-white/28 to-transparent pointer-events-none z-[3]"
-            style={{ left: shineX }}
-          />
-
-          {!imgError ? (
-            /* Try to load the PNG; fall back to icon if missing */
-            <div className="relative w-10 h-10 md:w-11 md:h-11">
-              <img
-                src="/photos/Deehar.png"
-                alt="Deehar Productions Logo"
-                className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(255,255,255,0.18)]"
-                onError={() => setImgError(true)}
-              />
-            </div>
-          ) : (
-            /* Elegant icon fallback when PNG not found */
-            <div className="w-10 h-10 md:w-11 md:h-11 rounded-lg bg-gradient-to-br from-amber-500/25 to-amber-700/20 flex items-center justify-center">
-              <Aperture
-                size={22}
-                className="text-amber-400 animate-spin-slow"
-                style={{ filter: "drop-shadow(0 0 8px rgba(245,158,11,0.65))" }}
-              />
-            </div>
-          )}
-        </motion.div>
-
-        {/* ── Typographic Branding Text ── */}
-        <motion.div
-          className="flex flex-col leading-none"
-          style={{
-            transform: "translateZ(18px)",
-            transformStyle: "preserve-3d",
-          }}
-        >
-          <span
-            className="font-bold tracking-widest text-white uppercase text-base md:text-lg group-hover:text-amber-400 transition-colors duration-300"
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              letterSpacing: "0.15em",
-              textShadow: "0 2px 12px rgba(0,0,0,0.85), 0 0 35px rgba(255,255,255,0.06)",
-            }}
-          >
-            Deehar
-          </span>
-          <span
-            className="text-[0.52rem] tracking-[0.32em] text-amber-400 uppercase font-semibold font-mono-custom mt-1"
-            style={{
-              textShadow: "0 0 14px rgba(245,158,11,0.5)",
-            }}
-          >
-            Productions
-          </span>
-        </motion.div>
-
+        {!imgError ? (
+          /* Try to load the PNG; fall back to icon if missing */
+          <div className="relative w-10 h-10 md:w-11 md:h-11">
+            <img
+              src="/photos/Deehar.png"
+              alt="Deehar Productions Logo"
+              className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(255,255,255,0.12)]"
+              onError={() => setImgError(true)}
+            />
+          </div>
+        ) : (
+          /* Elegant icon fallback when PNG not found */
+          <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-700/20 border border-amber-500/30 flex items-center justify-center shadow-[0_0_16px_rgba(245,158,11,0.2)]">
+            <Aperture
+              size={20}
+              className="text-amber-400"
+              style={{ filter: "drop-shadow(0 0 6px rgba(245,158,11,0.5))" }}
+            />
+          </div>
+        )}
       </motion.div>
+
+      <div className="flex flex-col leading-none">
+        <span
+          className="font-bold tracking-widest text-white uppercase text-base md:text-lg group-hover:text-amber-400 transition-colors duration-300"
+          style={{
+            fontFamily: "'Playfair Display', serif",
+            letterSpacing: "0.14em",
+            textShadow: "0 1px 10px rgba(0,0,0,0.8), 0 0 30px rgba(0,0,0,0.5)",
+          }}
+        >
+          Deehar
+        </span>
+        <span
+          className="text-[0.54rem] tracking-[0.3em] text-amber-400 uppercase font-semibold font-mono-custom mt-0.5"
+          style={{ textShadow: "0 0 12px rgba(245,158,11,0.4)" }}
+        >
+          Productions
+        </span>
+      </div>
     </Link>
   );
 }

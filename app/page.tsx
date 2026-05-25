@@ -137,7 +137,9 @@ export function ServiceCard({ event, index }: { event: any; index: number }) {
       variants={cardVariants}
       initial="hidden"
       animate={inView ? "show" : "hidden"}
-      className="service-card h-full flex flex-col group"
+      whileHover={{ y: -10, scale: 1.015 }}
+      transition={{ type: "spring", stiffness: 400, damping: 20 }}
+      className="service-card h-full flex flex-col group relative overflow-hidden bg-white border border-gray-100 hover:border-amber-500/30 transition-all duration-500 shadow-sm hover:shadow-[0_22px_50px_rgba(201,122,6,0.12)] rounded-3xl"
     >
       <Link href={`/events/${event.slug}`} className="cursor-pointer h-full flex flex-col">
         {/*
@@ -449,10 +451,10 @@ export default function Home() {
           <AnimatePresence mode="sync">
             <motion.div
               key={currentImage}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, scale: 1.14 }}
+              animate={{ opacity: 1, scale: 1.02 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 1.6, ease: "easeInOut" }}
+              transition={{ duration: 5.2, ease: "easeOut" }}
               className="absolute inset-0"
             >
               <CloudinaryImage
@@ -562,7 +564,7 @@ export default function Home() {
 
           <div className="hidden lg:flex relative w-[46%] xl:w-[48%] h-full items-center justify-center py-16">
             <motion.div
-              className="hero-main-image-card relative w-[310px] xl:w-[360px] h-[460px] xl:h-[530px] rounded-[30px] overflow-hidden shadow-[0_36px_90px_rgba(0,0,0,0.65)] border border-white/8"
+              className="hero-main-image-card relative w-[310px] xl:w-[360px] h-[460px] xl:h-[530px] rounded-[30px] overflow-hidden shadow-[0_36px_90px_rgba(0,0,0,0.65)] border border-white/8 group/card"
               initial={{ opacity: 0, x: 48, scale: 0.94 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ duration: 1.1, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
@@ -571,10 +573,10 @@ export default function Home() {
               <AnimatePresence mode="sync">
                 <motion.div
                   key={currentImage}
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, scale: 1.14 }}
+                  animate={{ opacity: 1, scale: 1.02 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 1.6, ease: "easeInOut" }}
+                  transition={{ duration: 5.2, ease: "easeOut" }}
                   className="absolute inset-0"
                 >
                   <CloudinaryImage
@@ -588,9 +590,21 @@ export default function Home() {
                   />
                 </motion.div>
               </AnimatePresence>
+              
+              {/* Luxury Golden Slide Progress Indicator */}
+              <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10 z-20 overflow-hidden">
+                <motion.div
+                  key={currentImage}
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 5, ease: "linear" }}
+                  className="h-full bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400"
+                />
+              </div>
+
               <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/10 pointer-events-none" />
 
-              <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10">
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-10 bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/8 shadow-lg">
                 {heroImages.map((_, i) => (
                   <button
                     key={i}
