@@ -45,7 +45,7 @@ export default function TextReveal({
       scale: 1,
       transition: {
         duration: 0.85,
-        ease: [0.16, 1, 0.3, 1], // cinematic cubic-bezier
+        ease: [0.16, 1, 0.3, 1] as [number, number, number, number], // cinematic cubic-bezier
       },
     },
   };
