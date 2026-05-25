@@ -468,7 +468,7 @@ export default function Home() {
                 fill
                 priority
                 crop="fill"
-                gravity="faces"
+                gravity="center"
                 className="object-cover object-center"
               />
             </motion.div>

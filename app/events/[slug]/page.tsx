@@ -279,35 +279,42 @@ export default function EventPage({ params }: { params: Promise<{ slug: string }
         {/* Bottom gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#080604] via-[#080604]/40 to-transparent z-10 pointer-events-none" />
 
-        {/* Slideshow dots */}
-        <div className="absolute bottom-20 md:bottom-24 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+        {/* Slideshow dots — encapsulated inside a beautiful glassmorphic container with larger mobile touch targets */}
+        <div className="absolute bottom-28 md:bottom-32 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20 bg-black/40 backdrop-blur-xl px-4.5 py-2.5 rounded-full border border-white/8 shadow-2xl">
           {event.gallery.slice(0, Math.min(event.gallery.length, 8)).map((_, i) => (
             <button
               key={i}
               onClick={() => setHeroIndex(i)}
-              className={`rounded-full transition-all duration-400 ${
-                i === heroIndex ? "w-6 h-1.5 bg-amber-400" : "w-1.5 h-1.5 bg-white/25 hover:bg-white/50"
+              className={`transition-all duration-500 rounded-full ${
+                i === heroIndex
+                  ? "w-6 h-2 bg-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.65)]"
+                  : "w-2 h-2 bg-white/25 hover:bg-white/55"
               }`}
+              style={{ touchAction: "manipulation" }}
               aria-label={`Slide ${i + 1}`}
             />
           ))}
         </div>
 
-        {/* Title */}
+        {/* Title & metadata pill */}
         <div className="absolute inset-0 z-20 flex flex-col justify-end items-center pb-8 md:pb-12 px-6 pointer-events-none">
           <motion.h1
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.35, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white text-center tracking-tight"
+            className="text-3xl md:text-6xl lg:text-7xl font-extrabold text-white text-center tracking-tight"
             style={{ fontFamily: "'Playfair Display', serif", textShadow: "0 4px 24px rgba(0,0,0,0.8)" }}
           >
             {event.title}
           </motion.h1>
-          <p className="text-amber-400/70 text-xs mt-3 tracking-[0.28em] uppercase font-medium">
-            {event.gallery.length} photos
-            {event.videoUrls.length > 0 ? ` · ${event.videoUrls.length} film${event.videoUrls.length > 1 ? "s" : ""}` : ""}
-          </p>
+          
+          {/* Futuristic minimalist metadata pill instead of crude plain photos text */}
+          <div className="mt-4 flex items-center gap-2 bg-white/6 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10 shadow-lg">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+            <span className="text-[0.6rem] text-gray-300 font-bold uppercase tracking-[0.24em] leading-none">
+              Exclusive Showcase
+            </span>
+          </div>
         </div>
       </div>
 
