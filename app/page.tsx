@@ -214,8 +214,8 @@ export function ServiceCard({ event, index }: { event: any; index: number }) {
                 <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{event.shortDesc}</p>
               </div>
               <div className="mt-4 flex justify-center">
-                <span className="inline-flex items-center text-amber-600 text-[0.72rem] font-bold tracking-widest uppercase gap-1.5 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                  Explore <ArrowRight size={12} />
+                <span className="inline-flex items-center text-amber-600 text-[0.72rem] font-bold tracking-widest uppercase gap-1.5 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 translate-y-0 lg:translate-y-2 lg:group-hover:translate-y-0 transition-all duration-300">
+                  Explore <ArrowRight size={12} className="animate-pulse" />
                 </span>
               </div>
             </div>
