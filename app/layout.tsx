@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Aperture } from "lucide-react";
 
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["300", "400", "500", "600"] });
 
@@ -15,6 +15,65 @@ const navLinks = [
   { href: "/#services", label: "Services" },
   { href: "/#contact",  label: "Contact" },
 ];
+
+/* ──────────────────────────────────────────────────────────────
+   LOGO — Typographic with optional image
+────────────────────────────────────────────────────────────── */
+function Logo({ scrolled }: { scrolled: boolean }) {
+  const [imgError, setImgError] = useState(false);
+
+  return (
+    <Link href="/" className="flex items-center gap-3 group" aria-label="Deehar Productions Home">
+      <motion.div
+        className="relative flex-shrink-0"
+        whileHover={{ rotate: [0, -4, 4, 0], scale: 1.06 }}
+        transition={{ duration: 0.45 }}
+      >
+        {!imgError ? (
+          /* Try to load the PNG; fall back to icon if missing */
+          <div className="relative w-10 h-10 md:w-11 md:h-11">
+            <Image
+              src="/photos/Deehar.png"
+              alt="Deehar Productions Logo"
+              fill
+              className="object-contain drop-shadow-lg"
+              priority
+              onError={() => setImgError(true)}
+            />
+          </div>
+        ) : (
+          /* Elegant icon fallback when PNG not found */
+          <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-700/20 border border-amber-500/30 flex items-center justify-center shadow-[0_0_16px_rgba(245,158,11,0.2)]">
+            <Aperture
+              size={20}
+              className="text-amber-400"
+              style={{ filter: "drop-shadow(0 0 6px rgba(245,158,11,0.5))" }}
+            />
+          </div>
+        )}
+      </motion.div>
+
+      <div className="flex flex-col leading-none">
+        <span
+          className="font-bold tracking-widest text-white uppercase text-base md:text-lg group-hover:text-amber-400 transition-colors duration-300"
+          style={{
+            fontFamily: "'Playfair Display', serif",
+            letterSpacing: "0.14em",
+            textShadow: "0 1px 10px rgba(0,0,0,0.8), 0 0 30px rgba(0,0,0,0.5)",
+          }}
+        >
+          Deehar
+        </span>
+        <span
+          className="text-[0.54rem] tracking-[0.3em] text-amber-400 uppercase font-semibold font-mono-custom mt-0.5"
+          style={{ textShadow: "0 0 12px rgba(245,158,11,0.4)" }}
+        >
+          Productions
+        </span>
+      </div>
+    </Link>
+  );
+}
 
 /* ──────────────────────────────────────────────────────────────
    NAVBAR
@@ -42,6 +101,12 @@ function Navbar() {
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
+  /* Lock body scroll when mobile menu is open */
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+
   return (
     <>
       <motion.header
@@ -49,56 +114,31 @@ function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className={`
-          sticky top-0 z-50 transition-all duration-700
+          sticky top-0 z-50 transition-all duration-500
           ${scrolled
-            ? "navbar-glass shadow-lg py-2"
-            : "bg-transparent py-4"
+            ? "navbar-glass py-2.5"
+            : "navbar-transparent py-4"
           }
         `}
       >
+        {/* Thin amber accent line at very top — only visible when scrolled */}
+        {scrolled && (
+          <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
+        )}
+
         <div className="max-w-7xl mx-auto px-5 md:px-10 flex justify-between items-center">
 
           {/* ── Logo ── */}
-          <Link
-            href="/"
-            className="flex items-center gap-3 group"
-            onClick={() => setActiveLink("/")}
-          >
-            <motion.div
-              className="relative w-10 h-10 md:w-12 md:h-12 flex-shrink-0"
-              whileHover={{ rotate: [0, -4, 4, 0], scale: 1.06 }}
-              transition={{ duration: 0.45 }}
-            >
-              <Image
-                src="/photos/Deehar.png"
-                alt="Deehar Production Logo"
-                fill
-                className="object-contain drop-shadow-lg"
-                priority
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-              />
-            </motion.div>
-            <div className="flex flex-col leading-none">
-              <span
-                className="font-bold tracking-widest text-white uppercase text-base md:text-lg group-hover:text-amber-400 transition-colors duration-300 drop-shadow-sm"
-                style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "0.14em", textShadow: scrolled ? 'none' : '0 1px 8px rgba(0,0,0,0.5)' }}
-              >
-                Deehar
-              </span>
-              <span className="text-[0.56rem] tracking-[0.28em] text-amber-400 uppercase font-semibold font-mono-custom mt-0.5">
-                Productions
-              </span>
-            </div>
-          </Link>
+          <Logo scrolled={scrolled} />
 
           {/* ── Desktop Nav ── */}
-          <nav className="hidden md:flex items-center gap-0.5">
+          <nav className="hidden md:flex items-center gap-0.5" aria-label="Main navigation">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setActiveLink(link.href)}
-                className="nav-link relative px-4 py-2 text-sm rounded-lg hover:bg-white/10 transition-colors duration-200"
+                className="nav-link relative px-4 py-2 text-sm rounded-lg hover:bg-white/8 transition-colors duration-200"
               >
                 {link.label}
                 {activeLink === link.href && (
@@ -115,7 +155,8 @@ function Navbar() {
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className="ml-3">
               <Link
                 href="/#contact"
-                className="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-black text-xs font-extrabold rounded-xl tracking-widest uppercase transition-all duration-300 shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_30px_rgba(245,158,11,0.6)] block"
+                id="navbar-book-now"
+                className="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-black text-xs font-extrabold rounded-xl tracking-widest uppercase transition-all duration-300 shadow-[0_0_22px_rgba(245,158,11,0.45)] hover:shadow-[0_0_32px_rgba(245,158,11,0.65)] block"
                 style={{ letterSpacing: "0.08em" }}
               >
                 Book Now
@@ -125,10 +166,13 @@ function Navbar() {
 
           {/* ── Mobile Toggle ── */}
           <motion.button
-            className="md:hidden p-2 rounded-xl text-white hover:bg-white/10 transition-colors drop-shadow-sm"
+            id="mobile-menu-toggle"
+            className="md:hidden p-2 rounded-xl text-white hover:bg-white/10 transition-colors"
+            style={{ textShadow: "0 1px 8px rgba(0,0,0,0.8)" }}
             onClick={() => setMobileOpen(!mobileOpen)}
             whileTap={{ scale: 0.9 }}
             aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
           >
             <AnimatePresence mode="wait" initial={false}>
               {mobileOpen ? (
@@ -168,7 +212,10 @@ function Navbar() {
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             className="mobile-menu sticky top-[60px] z-40 overflow-hidden"
           >
-            <nav className="max-w-7xl mx-auto px-5 py-4 flex flex-col gap-1">
+            <nav
+              className="max-w-7xl mx-auto px-5 py-5 flex flex-col gap-1"
+              aria-label="Mobile navigation"
+            >
               {navLinks.map((link, i) => (
                 <motion.div
                   key={link.href}
@@ -179,9 +226,12 @@ function Navbar() {
                   <Link
                     href={link.href}
                     onClick={() => { setMobileOpen(false); setActiveLink(link.href); }}
-                    className="flex items-center px-4 py-3 rounded-xl text-gray-700 hover:text-amber-700 hover:bg-amber-50 transition-all duration-200 font-medium text-sm"
+                    className="flex items-center px-4 py-3.5 rounded-xl text-gray-200 hover:text-amber-400 hover:bg-white/6 transition-all duration-200 font-medium text-sm tracking-wide border border-transparent hover:border-amber-500/15"
                   >
                     {link.label}
+                    {activeLink === link.href && (
+                      <span className="ml-auto w-1.5 h-1.5 rounded-full bg-amber-500" />
+                    )}
                   </Link>
                 </motion.div>
               ))}
@@ -191,17 +241,23 @@ function Navbar() {
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: navLinks.length * 0.07, duration: 0.3 }}
-                className="mt-2"
+                className="mt-3"
               >
                 <Link
                   href="/#contact"
                   onClick={() => setMobileOpen(false)}
-                  className="flex justify-center px-4 py-3.5 bg-amber-600 text-white rounded-xl font-bold text-xs tracking-widest uppercase transition-all hover:bg-amber-700 active:scale-95"
+                  className="flex justify-center px-4 py-3.5 bg-gradient-to-r from-amber-600 to-amber-500 text-white rounded-xl font-bold text-xs tracking-widest uppercase transition-all hover:from-amber-500 hover:to-amber-400 active:scale-95 shadow-[0_4px_16px_rgba(201,122,6,0.4)]"
                   style={{ letterSpacing: "0.1em" }}
                 >
                   Book a Session
                 </Link>
               </motion.div>
+
+              {/* Divider */}
+              <div className="mt-4 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
+              <p className="text-center text-[0.6rem] text-gray-600 tracking-[0.2em] uppercase pt-2">
+                Deehar Productions · Est. 2016
+              </p>
             </nav>
           </motion.div>
         )}
@@ -232,9 +288,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        <title>Deehar Productions</title>
-        <meta name="description" content="Professional Photography and Videography Studio" />
+        <title>Deehar Productions — Premium Photography &amp; Videography Studio</title>
+        <meta name="description" content="Deehar Productions — Professional cinematic photography and videography for weddings, portraits, baby showers, corporate events and more. Based in Bengaluru, serving across Karnataka." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#0C0A07" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -246,7 +303,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={`${dmSans.className} bg-[#FDFBF7] text-gray-800 antialiased flex flex-col min-h-screen`}
         style={{ overflowX: "hidden" }}
       >
-        {/* Film grain overlay */}
+        {/* Cinematic film-grain overlay — defined in globals.css */}
         <div className="grain-overlay" aria-hidden="true" />
         {/* Scroll progress bar */}
         <ScrollProgress />

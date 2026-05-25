@@ -5,7 +5,8 @@
  * Drop-in wrapper around next-cloudinary's <CldImage>.
  * ✅ Auto AVIF / WebP format (f_auto from Cloudinary)
  * ✅ Auto quality   (q_auto from Cloudinary)
- * ✅ AI smart-crop  (g_auto keeps faces in frame)
+ * ✅ AI smart-crop  (gravity="auto" keeps best composition)
+ * ✅ Multi-face crop (gravity="faces" detects all faces in frame)
  * ✅ Shimmer skeleton while loading
  * ✅ Camera-icon fallback on error
  * ✅ Accepts style prop for inline overrides
@@ -46,9 +47,12 @@ interface CloudinaryImageProps {
   crop?: "auto" | "fill" | "fit" | "thumb" | "scale";
   /**
    * Cloudinary gravity for smart cropping:
-   * - "auto"   — AI-based smart crop (good for landscapes/events)
-   * - "face"   — Centers on detected faces (best for portraits/weddings)
-   * - "center" — Simple center crop
+   * - "auto"   — AI-based smart crop (best for landscapes, groups, scenes)
+   * - "face"   — Centers on single detected face (portraits, close-ups)
+   * - "faces"  — Centers on ALL detected faces (group shots, weddings)
+   * - "center" — Simple center crop (architecture, real estate)
+   * - "north"  — Top-biased crop
+   * - "south"  — Bottom-biased crop
    */
   gravity?: "auto" | "face" | "faces" | "center" | "north" | "south";
   sizes?: string;
@@ -83,19 +87,29 @@ export default function CloudinaryImage({
     );
   }
 
-  // Default sizes: optimised for gallery grids
+  // Default sizes: optimised for gallery grids and responsive hero
   const defaultSizes = fill
     ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
     : undefined;
 
   return (
     <>
-      {/* Shimmer skeleton while image loads */}
+      {/* Shimmer skeleton while image loads — dark to match cinematic bg */}
       {loading && (
         <div
-          className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-pulse z-10"
+          className="absolute inset-0 z-10 overflow-hidden"
+          style={{ background: "linear-gradient(135deg, #1a1612 0%, #252018 50%, #1a1612 100%)" }}
           aria-hidden="true"
-        />
+        >
+          {/* Animated shimmer sweep */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(90deg, transparent 0%, rgba(201,122,6,0.06) 50%, transparent 100%)",
+              animation: "shimmer 1.8s ease-in-out infinite",
+            }}
+          />
+        </div>
       )}
 
       {fill ? (
@@ -107,7 +121,7 @@ export default function CloudinaryImage({
           crop={{ type: crop, source: true, gravity }}
           sizes={sizes ?? defaultSizes ?? "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
           priority={priority}
-          className={`transition-opacity duration-500 ${loading ? "opacity-0" : "opacity-100"} ${className}`}
+          className={`transition-opacity duration-700 ${loading ? "opacity-0" : "opacity-100"} ${className}`}
           style={style}
           onLoad={() => setLoading(false)}
           onError={() => { setLoading(false); setErrored(true); }}
@@ -121,7 +135,7 @@ export default function CloudinaryImage({
           height={height}
           crop={{ type: crop, source: true, gravity }}
           priority={priority}
-          className={`transition-opacity duration-500 ${loading ? "opacity-0" : "opacity-100"} ${className}`}
+          className={`transition-opacity duration-700 ${loading ? "opacity-0" : "opacity-100"} ${className}`}
           style={style}
           onLoad={() => setLoading(false)}
           onError={() => { setLoading(false); setErrored(true); }}

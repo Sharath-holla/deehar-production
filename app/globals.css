@@ -115,6 +115,37 @@ img { max-width: 100%; }
   50%       { box-shadow: 0 0 24px rgba(245,158,11,0.5), 0 0 48px rgba(245,158,11,0.15); }
 }
 
+@keyframes orbDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+  25%       { transform: translate(12px, -18px) scale(1.03); opacity: 0.75; }
+  50%       { transform: translate(-8px, -10px) scale(0.97); opacity: 0.5; }
+  75%       { transform: translate(5px, 14px) scale(1.02); opacity: 0.7; }
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+@keyframes filmGrain {
+  0%   { transform: translate(0, 0); }
+  10%  { transform: translate(-2%, -3%); }
+  20%  { transform: translate(3%, 2%); }
+  30%  { transform: translate(-1%, 4%); }
+  40%  { transform: translate(4%, -1%); }
+  50%  { transform: translate(-3%, 3%); }
+  60%  { transform: translate(2%, -4%); }
+  70%  { transform: translate(-4%, 1%); }
+  80%  { transform: translate(1%, -2%); }
+  90%  { transform: translate(-2%, 4%); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes scanLine {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
 /* ═══════════════════════════════════════════════════════════════
    UTILITY CLASSES
 ═══════════════════════════════════════════════════════════════ */
@@ -132,18 +163,80 @@ img { max-width: 100%; }
 .delay-700 { animation-delay: 700ms; }
 .delay-800 { animation-delay: 800ms; }
 
+/* Font mono custom — used in Navbar */
+.font-mono-custom {
+  font-family: 'DM Mono', 'Courier New', monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GRAIN OVERLAY — Cinematic Film Grain (Fixed over everything)
+═══════════════════════════════════════════════════════════════ */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.028;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  animation: filmGrain 0.5s steps(1) infinite;
+  mix-blend-mode: overlay;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO NOISE — Subtle texture layer inside hero section
+═══════════════════════════════════════════════════════════════ */
+.hero-noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  mix-blend-mode: soft-light;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AMBIENT ORB — Floating background glow orbs
+═══════════════════════════════════════════════════════════════ */
+.ambient-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  will-change: transform, opacity;
+  animation: orbDrift 12s ease-in-out infinite;
+  pointer-events: none;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    NAVBAR — ULTRA GLASSMORPHISM
 ═══════════════════════════════════════════════════════════════ */
 .navbar-glass {
-  background: rgba(6, 4, 2, 0.82);
+  background: rgba(6, 4, 2, 0.88);
   backdrop-filter: blur(32px) saturate(200%);
   -webkit-backdrop-filter: blur(32px) saturate(200%);
   border-bottom: 1px solid rgba(201,122,6,0.18);
   box-shadow:
     0 1px 0 rgba(201,122,6,0.10) inset,
-    0 8px 40px rgba(0,0,0,0.55),
+    0 8px 40px rgba(0,0,0,0.65),
     0 0 0 0.5px rgba(255,255,255,0.04) inset;
+}
+
+/* Navbar transparent state — enhanced contrast for legibility over hero */
+.navbar-transparent {
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.55) 0%,
+    rgba(0,0,0,0.15) 80%,
+    transparent 100%
+  );
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
 }
 
 .nav-link {
@@ -151,10 +244,10 @@ img { max-width: 100%; }
   font-weight: 500;
   font-size: 0.8rem;
   letter-spacing: 0.08em;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.85);
   transition: color 0.3s var(--transition-smooth);
   text-transform: uppercase;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.7), 0 0 20px rgba(0,0,0,0.5);
 }
 
 .nav-link::after {
@@ -172,7 +265,7 @@ img { max-width: 100%; }
 
 .nav-link:hover {
   color: var(--accent-gold);
-  text-shadow: 0 0 12px rgba(245,158,11,0.3);
+  text-shadow: 0 0 12px rgba(245,158,11,0.5), 0 1px 8px rgba(0,0,0,0.7);
 }
 
 .nav-link:hover::after {
@@ -188,7 +281,6 @@ img { max-width: 100%; }
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  /* Removed heavy shimmer animation for performance, relying on pure gradient */
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -207,37 +299,54 @@ img { max-width: 100%; }
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s var(--transition-spring), background 0.3s;
+  transition: transform 0.2s var(--transition-spring), background 0.3s, box-shadow 0.3s;
   text-decoration: none;
   white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(201,122,6,0.35), 0 0 0 1px rgba(255,255,255,0.1) inset;
+}
+
+.hero-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 .hero-btn-primary:hover {
   transform: translateY(-2px);
   background: var(--accent-amber-light);
+  box-shadow: 0 8px 28px rgba(201,122,6,0.55), 0 0 0 1px rgba(255,255,255,0.12) inset;
 }
+
+.hero-btn-primary:hover::before { opacity: 1; }
 
 .hero-btn-ghost {
   padding: 14px 32px;
   background: transparent;
-  color: var(--text-dark-primary);
+  color: rgba(255,255,255,0.9);
   font-size: 0.875rem;
   font-weight: 600;
   border-radius: 12px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  border: 1px solid var(--border-dark);
+  border: 1px solid rgba(255,255,255,0.22);
   cursor: pointer;
   position: relative;
   overflow: hidden;
   transition: all 0.3s var(--transition-smooth);
   text-decoration: none;
   white-space: nowrap;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .hero-btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #FBBF24;
+  box-shadow: 0 0 20px rgba(245,158,11,0.15);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -249,7 +358,7 @@ img { max-width: 100%; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   SERVICE CARDS — PREMIUM (kept as-is, user likes these)
+   SERVICE CARDS — PREMIUM
 ═══════════════════════════════════════════════════════════════ */
 .service-card {
   position: relative;
@@ -297,7 +406,7 @@ img { max-width: 100%; }
 .service-card:hover::after  { opacity: 1; }
 
 /* ═══════════════════════════════════════════════════════════════
-   WHY CHOOSE US CARDS (kept as-is)
+   WHY CHOOSE US CARDS
 ═══════════════════════════════════════════════════════════════ */
 .why-card {
   background: #FFFFFF;
@@ -374,24 +483,28 @@ img { max-width: 100%; }
 .progress-line {
   position: fixed;
   top: 0; left: 0;
-  height: 3px;
-  background: var(--accent-amber);
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-amber), var(--accent-gold), var(--accent-amber));
+  background-size: 200% auto;
+  animation: gradientShift 3s linear infinite;
   z-index: 9998;
   transform-origin: left;
+  box-shadow: 0 0 8px rgba(245,158,11,0.6);
 }
 
 /* ═══════════════════════════════════════════════════════════════
    MOBILE MENU
 ═══════════════════════════════════════════════════════════════ */
 .mobile-menu {
-  background: rgba(8, 6, 4, 0.96);
-  backdrop-filter: blur(28px) saturate(220%);
-  -webkit-backdrop-filter: blur(28px) saturate(220%);
-  border-bottom: 1px solid rgba(201,122,6,0.15);
+  background: rgba(6, 4, 2, 0.97);
+  backdrop-filter: blur(32px) saturate(220%);
+  -webkit-backdrop-filter: blur(32px) saturate(220%);
+  border-bottom: 1px solid rgba(201,122,6,0.18);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.7);
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   DARK SECTION — CLEAN & MODERN
+   DARK SECTION
 ═══════════════════════════════════════════════════════════════ */
 .dark-section {
   background: var(--bg-dark);
@@ -400,7 +513,7 @@ img { max-width: 100%; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   TESTIMONIAL CARDS — SLEEK
+   TESTIMONIAL CARDS
 ═══════════════════════════════════════════════════════════════ */
 .testimonial-card {
   background: var(--surface-dark-card);
@@ -418,7 +531,7 @@ img { max-width: 100%; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   MARQUEE SECTION — CLEAN
+   MARQUEE SECTION
 ═══════════════════════════════════════════════════════════════ */
 .marquee-section {
   background: var(--bg-dark-2);
@@ -554,15 +667,17 @@ img { max-width: 100%; }
   border: none;
   cursor: pointer;
   letter-spacing: 0.05em;
-  transition: transform 0.2s var(--transition-spring), background 0.3s;
+  transition: transform 0.2s var(--transition-spring), background 0.3s, box-shadow 0.3s;
   display: inline-flex;
   align-items: center;
   padding: 14px 28px;
+  box-shadow: 0 4px 16px rgba(201,122,6,0.3);
 }
 
 .btn-amber:hover {
   background: var(--accent-amber-light);
   transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(201,122,6,0.45);
 }
 
 .btn-amber:active { transform: translateY(0); }
@@ -779,6 +894,43 @@ img { max-width: 100%; }
   border: 1px solid var(--border-dark);
   border-radius: 20px;
   position: relative;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   IMAGE CONTAINER — PROPER ASPECT RATIO
+   Prevents face-cropping by using a consistent aspect ratio
+   and letting Cloudinary's gravity=auto choose the best crop.
+═══════════════════════════════════════════════════════════════ */
+.img-container-landscape {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.img-container-portrait {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+
+.img-container-square {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VIGNETTE EFFECT — Cinematic edge darkening
+═══════════════════════════════════════════════════════════════ */
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.65) 100%);
+  pointer-events: none;
+  z-index: 2;
 }
 
 /* ═══════════════════════════════════════════════════════════════

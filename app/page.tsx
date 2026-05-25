@@ -140,17 +140,19 @@ export function ServiceCard({ event, index }: { event: any; index: number }) {
       className="service-card h-full flex flex-col group"
     >
       <Link href={`/events/${event.slug}`} className="cursor-pointer h-full flex flex-col">
-        <div className="relative h-64 w-full overflow-hidden">
+        {/* Aspect-ratio container prevents face-cropping on portrait images */}
+        <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4 / 3" }}>
           <CloudinaryImage
             src={event.coverImage}
             alt={event.title}
             fill
             crop="fill"
+            gravity="auto"
             className="object-cover transition-transform duration-700 group-hover:scale-[1.08]"
             style={{ transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <div className="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-400 translate-y-2 group-hover:translate-y-0">
             <span className="text-white text-[0.62rem] font-bold tracking-[0.2em] uppercase bg-amber-600/80 backdrop-blur-sm px-3 py-1.5 rounded-full">
               {event.title}
@@ -385,10 +387,10 @@ export default function Home() {
         <FloatingOrb className="w-[400px] h-[400px] top-10 left-1/4 bg-amber-500/7 z-0" delay={3} />
         <FloatingOrb className="w-[300px] h-[300px] bottom-1/4 left-8 bg-amber-700/8 z-0" delay={6} />
 
-        {/* Top gradient — ensures transparent navbar is always readable */}
+        {/* Top gradient — strong enough to guarantee navbar legibility at all times */}
         <div
-          className="absolute top-0 left-0 right-0 h-40 z-[3] pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 60%, transparent 100%)" }}
+          className="absolute top-0 left-0 right-0 h-56 z-[3] pointer-events-none"
+          style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.15) 75%, transparent 100%)" }}
           aria-hidden="true"
         />
 
@@ -425,13 +427,14 @@ export default function Home() {
                 fill
                 priority
                 crop="fill"
-                gravity="face"
+                gravity="faces"
                 className="object-cover object-center"
               />
             </motion.div>
           </AnimatePresence>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/50 to-black/85" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-black/25" />
+          {/* Layered gradients for depth and readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/45 to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-14 flex flex-col lg:flex-row items-center min-h-screen gap-8 lg:gap-0">
@@ -546,7 +549,7 @@ export default function Home() {
                     fill
                     priority
                     crop="fill"
-                    gravity="face"
+                    gravity="faces"
                     className="object-cover"
                   />
                 </motion.div>
@@ -579,7 +582,7 @@ export default function Home() {
                 alt="Event preview"
                 fill
                 crop="fill"
-                gravity="face"
+                gravity="auto"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-black/18" />
