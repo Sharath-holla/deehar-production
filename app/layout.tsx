@@ -32,12 +32,10 @@ function Logo({ scrolled }: { scrolled: boolean }) {
         {!imgError ? (
           /* Try to load the PNG; fall back to icon if missing */
           <div className="relative w-10 h-10 md:w-11 md:h-11">
-            <Image
+            <img
               src="/photos/Deehar.png"
               alt="Deehar Productions Logo"
-              fill
-              className="object-contain drop-shadow-lg"
-              priority
+              className="w-full h-full object-contain drop-shadow-lg"
               onError={() => setImgError(true)}
             />
           </div>

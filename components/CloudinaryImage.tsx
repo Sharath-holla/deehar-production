@@ -92,6 +92,11 @@ export default function CloudinaryImage({
     ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
     : undefined;
 
+  const supportsGravity = ["auto", "crop", "fill", "lfill", "fill_pad", "thumb"].includes(crop);
+  const cropConfig = supportsGravity
+    ? { type: crop, source: true, gravity }
+    : { type: crop, source: true };
+
   return (
     <>
       {/* Shimmer skeleton while image loads — dark to match cinematic bg */}
@@ -118,7 +123,7 @@ export default function CloudinaryImage({
           src={src}
           alt={alt}
           fill
-          crop={{ type: crop, source: true, gravity }}
+          crop={cropConfig}
           sizes={sizes ?? defaultSizes ?? "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
           priority={priority}
           className={`transition-opacity duration-700 ${loading ? "opacity-0" : "opacity-100"} ${className}`}
@@ -133,7 +138,7 @@ export default function CloudinaryImage({
           alt={alt}
           width={width}
           height={height}
-          crop={{ type: crop, source: true, gravity }}
+          crop={cropConfig}
           priority={priority}
           className={`transition-opacity duration-700 ${loading ? "opacity-0" : "opacity-100"} ${className}`}
           style={style}
