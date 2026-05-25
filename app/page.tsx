@@ -456,26 +456,56 @@ export default function Home() {
           <AnimatePresence mode="sync">
             <motion.div
               key={currentImage}
-              initial={{ opacity: 0, scale: 1.14 }}
+              initial={{ opacity: 0, scale: 1.12 }}
               animate={{ opacity: 1, scale: 1.02 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 5.2, ease: "easeOut" }}
               className="absolute inset-0"
             >
-              <CloudinaryImage
-                src={heroImages[currentImage]}
-                alt="Deehar Production"
-                fill
-                priority
-                crop="fill"
-                gravity="auto"
-                className="object-cover object-center"
-              />
+              {/* Blurred background fills portrait screen with color wash */}
+              <div className="absolute inset-0 scale-110">
+                <CloudinaryImage
+                  src={heroImages[currentImage]}
+                  alt=""
+                  fill
+                  crop="fill"
+                  className="object-cover blur-2xl opacity-20 saturate-150"
+                />
+              </div>
+
+              {/* Crisp contained foreground card — 100% visual composition visible with zero cropping! */}
+              <div className="absolute inset-x-0 top-[28%] bottom-[24%] px-5 flex items-center justify-center">
+                <div
+                  className="relative w-full h-full rounded-[24px] overflow-hidden border border-white/12 shadow-[0_24px_50px_rgba(0,0,0,0.85)] z-10"
+                  style={{
+                    background: "linear-gradient(145deg, #0d0b09, #171310)",
+                  }}
+                >
+                  <CloudinaryImage
+                    src={heroImages[currentImage]}
+                    alt="Deehar Production Portfolio"
+                    fill
+                    priority
+                    crop="fit"
+                    className="object-contain p-1"
+                  />
+                  
+                  {/* Glowing Slide Progress indicator at card bottom */}
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/10 z-20 overflow-hidden">
+                    <motion.div
+                      key={currentImage}
+                      initial={{ width: 0 }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 5, ease: "linear" }}
+                      className="h-full bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400"
+                    />
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </AnimatePresence>
-          {/* Layered gradients for depth and readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/45 to-black/80" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
+          {/* Layered dark gradients for elite contrast and title legibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/15 to-[#0C0A07]/90 z-[3]" />
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-10 lg:px-14 flex flex-col lg:flex-row items-center min-h-[100dvh] lg:min-h-screen gap-8 lg:gap-0">
