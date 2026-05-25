@@ -142,84 +142,86 @@ export function ServiceCard({ event, index }: { event: any; index: number }) {
       animate={inView ? "show" : "hidden"}
       className="h-full"
     >
-      <ThreeDCard className="h-full" maxTilt={10}>
-        <Link href={`/events/${event.slug}`} className="cursor-pointer h-full flex flex-col service-card group relative overflow-hidden bg-white border border-gray-100/80 hover:border-amber-500/30 transition-all duration-500 shadow-sm hover:shadow-[0_24px_55px_rgba(201,122,6,0.12)] rounded-3xl">
-          {/*
-            IMAGE RENDERING STRATEGY
-            ─────────────────────────────────────────────────────────────────────
-            Problem:  crop="fill" (Cloudinary) + object-cover (CSS) = DOUBLE CROP
-                      Both Cloudinary AND the browser clip the image → bad results
+      <Link href={`/events/${event.slug}`} className="cursor-pointer h-full flex flex-col group block">
+        <ThreeDCard className="h-full" maxTilt={10}>
+          <div className="service-card h-full flex flex-col relative overflow-hidden bg-white border border-gray-100/80 hover:border-amber-500/30 transition-all duration-500 shadow-sm hover:shadow-[0_24px_55px_rgba(201,122,6,0.12)] rounded-3xl">
+            {/*
+              IMAGE RENDERING STRATEGY
+              ─────────────────────────────────────────────────────────────────────
+              Problem:  crop="fill" (Cloudinary) + object-cover (CSS) = DOUBLE CROP
+                        Both Cloudinary AND the browser clip the image → bad results
 
-            Solution: crop="fit" (Cloudinary) + object-contain (CSS) = ZERO CROP
-                      Cloudinary scales the full image to fit within the box.
-                      The browser displays it without any clipping.
-                      Dark cinematic background fills the letterbox areas.
-            ─────────────────────────────────────────────────────────────────────
-          */}
-          <div
-            className="relative w-full overflow-hidden"
-            style={{
-              aspectRatio: "4 / 3",
-              background: "linear-gradient(160deg, #0f0d0a 0%, #1c1812 50%, #0d0b09 100%)",
-            }}
-          >
-            {/* Subtle ambient glow behind the image */}
+              Solution: crop="fit" (Cloudinary) + object-contain (CSS) = ZERO CROP
+                        Cloudinary scales the full image to fit within the box.
+                        The browser displays it without any clipping.
+                        Dark cinematic background fills the letterbox areas.
+              ─────────────────────────────────────────────────────────────────────
+            */}
             <div
-              className="absolute inset-0 z-0"
+              className="relative w-full overflow-hidden"
               style={{
-                background: "radial-gradient(ellipse at center, rgba(201,122,6,0.06) 0%, transparent 70%)",
+                aspectRatio: "4 / 3",
+                background: "linear-gradient(160deg, #0f0d0a 0%, #1c1812 50%, #0d0b09 100%)",
               }}
-              aria-hidden="true"
-            />
+            >
+              {/* Subtle ambient glow behind the image */}
+              <div
+                className="absolute inset-0 z-0"
+                style={{
+                  background: "radial-gradient(ellipse at center, rgba(201,122,6,0.06) 0%, transparent 70%)",
+                }}
+                aria-hidden="true"
+              />
 
-            <CloudinaryImage
-              src={event.coverImage}
-              alt={event.title}
-              fill
-              crop="fit"
-              className="object-contain transition-transform duration-700 group-hover:scale-[1.04] z-[1]"
-              style={{ transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)", padding: "2px" }}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            />
+              <CloudinaryImage
+                src={event.coverImage}
+                alt={event.title}
+                fill
+                crop="fit"
+                className="object-contain transition-transform duration-700 group-hover:scale-[1.04] z-[1]"
+                style={{ transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)", padding: "2px" }}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              />
 
-            {/* Bottom gradient for text readability */}
-            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent z-[2]" />
+              {/* Bottom gradient for text readability */}
+              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent z-[2]" />
 
-            {/* Hover overlay */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500 z-[3]" />
+              {/* Hover overlay */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500 z-[3]" />
 
-            {/* Category pill — top left on hover */}
-            <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-all duration-400 translate-y-2 group-hover:translate-y-0 z-[4]">
-              <span className="text-white text-[0.6rem] font-bold tracking-[0.2em] uppercase bg-amber-600/85 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
-                {event.title}
-              </span>
+              {/* Category pill — top left on hover */}
+              <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-all duration-400 translate-y-2 group-hover:translate-y-0 z-[4]">
+                <span className="text-white text-[0.6rem] font-bold tracking-[0.2em] uppercase bg-amber-600/85 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg">
+                  {event.title}
+                </span>
+              </div>
+
+              {/* View Gallery pill — center on hover */}
+              <div className="absolute inset-0 flex items-center justify-center z-[4]">
+                <span className="text-white text-[0.7rem] font-bold tracking-[0.22em] uppercase bg-black/40 backdrop-blur-md px-5 py-2 rounded-full border border-amber-500/30 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-3 group-hover:translate-y-0 shadow-[0_0_20px_rgba(201,122,6,0.3)]">
+                  View Gallery
+                </span>
+              </div>
             </div>
-
-            {/* View Gallery pill — center on hover */}
-            <div className="absolute inset-0 flex items-center justify-center z-[4]">
-              <span className="text-white text-[0.7rem] font-bold tracking-[0.22em] uppercase bg-black/40 backdrop-blur-md px-5 py-2 rounded-full border border-amber-500/30 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-3 group-hover:translate-y-0 shadow-[0_0_20px_rgba(201,122,6,0.3)]">
-                View Gallery
-              </span>
+            <div className="p-6 text-center flex-grow flex flex-col justify-between relative z-10">
+              <div>
+                <h3
+                  className="text-lg font-bold mb-2 text-gray-900 group-hover:text-amber-700 transition-colors duration-300"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  {event.title}
+                </h3>
+                <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{event.shortDesc}</p>
+              </div>
+              <div className="mt-4 flex justify-center">
+                <span className="inline-flex items-center text-amber-600 text-[0.72rem] font-bold tracking-widest uppercase gap-1.5 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                  Explore <ArrowRight size={12} />
+                </span>
+              </div>
             </div>
           </div>
-          <div className="p-6 text-center flex-grow flex flex-col justify-between relative z-10">
-            <div>
-              <h3
-                className="text-lg font-bold mb-2 text-gray-900 group-hover:text-amber-700 transition-colors duration-300"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
-                {event.title}
-              </h3>
-              <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{event.shortDesc}</p>
-            </div>
-            <div className="mt-4 flex justify-center">
-              <span className="inline-flex items-center text-amber-600 text-[0.72rem] font-bold tracking-widest uppercase gap-1.5 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                Explore <ArrowRight size={12} />
-              </span>
-            </div>
-          </div>
-        </Link>
-      </ThreeDCard>
+        </ThreeDCard>
+      </Link>
     </motion.div>
   );
 }
