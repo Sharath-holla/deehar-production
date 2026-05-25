@@ -4,7 +4,7 @@ import { events } from "@/lib/data";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { use, useState, useEffect } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Images } from "lucide-react";
 import CloudinaryImage from "@/components/CloudinaryImage";
 import CloudinaryVideo from "@/components/CloudinaryVedio";
 
@@ -21,7 +21,6 @@ function Lightbox({
 }) {
   const [index, setIndex] = useState(startIndex);
 
-  // Keyboard navigation
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -32,7 +31,6 @@ function Lightbox({
     return () => window.removeEventListener("keydown", handler);
   }, [images.length, onClose]);
 
-  // Lock scroll while open
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
@@ -52,46 +50,62 @@ function Lightbox({
       {/* Close */}
       <button
         onClick={onClose}
-        className="absolute top-5 right-6 text-white/60 hover:text-amber-400 transition-colors z-[110] p-2"
+        className="absolute top-5 right-6 text-white/60 hover:text-amber-400 transition-colors z-[110] p-2 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-sm"
         aria-label="Close lightbox"
       >
-        <X size={36} />
+        <X size={28} />
       </button>
 
       {/* Counter */}
-      <span className="absolute top-6 left-1/2 -translate-x-1/2 text-white/40 text-xs tracking-widest uppercase z-[110]">
+      <span className="absolute top-6 left-1/2 -translate-x-1/2 text-white/40 text-xs tracking-widest uppercase z-[110] bg-black/30 backdrop-blur-sm px-4 py-1.5 rounded-full">
         {index + 1} / {images.length}
       </span>
 
       {/* Prev */}
       <button
         onClick={(e) => { e.stopPropagation(); setIndex((i) => (i - 1 + images.length) % images.length); }}
-        className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-amber-400 transition-colors z-[110] p-3 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-sm"
+        className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-amber-400 transition-colors z-[110] p-3 bg-white/5 hover:bg-white/12 rounded-full backdrop-blur-sm border border-white/10 hover:border-amber-500/30"
         aria-label="Previous image"
       >
-        <ChevronLeft size={28} />
+        <ChevronLeft size={26} />
       </button>
 
       {/* Next */}
       <button
         onClick={(e) => { e.stopPropagation(); setIndex((i) => (i + 1) % images.length); }}
-        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-amber-400 transition-colors z-[110] p-3 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-sm"
+        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-amber-400 transition-colors z-[110] p-3 bg-white/5 hover:bg-white/12 rounded-full backdrop-blur-sm border border-white/10 hover:border-amber-500/30"
         aria-label="Next image"
       >
-        <ChevronRight size={28} />
+        <ChevronRight size={26} />
       </button>
 
-      {/* Image */}
+      {/*
+        LIGHTBOX IMAGE
+        crop="fit" + object-contain = full image always visible, no cropping.
+        The blurred background fills negative space beautifully.
+      */}
       <AnimatePresence mode="wait">
         <motion.div
           key={index}
-          initial={{ opacity: 0, scale: 0.97 }}
+          initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.97 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-          className="relative w-full max-w-6xl h-[88vh] px-16 cursor-default"
+          exit={{ opacity: 0, scale: 0.96 }}
+          transition={{ duration: 0.22, ease: "easeOut" }}
+          className="relative w-full max-w-5xl h-[85vh] px-14 cursor-default"
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Blurred background fill (no empty black bars) */}
+          <div className="absolute inset-0 px-14 overflow-hidden opacity-25">
+            <CloudinaryImage
+              src={images[index]}
+              alt=""
+              fill
+              crop="fill"
+              className="object-cover blur-3xl scale-110"
+            />
+          </div>
+
+          {/* Crisp full image */}
           <CloudinaryImage
             src={images[index]}
             alt={`Gallery image ${index + 1}`}
@@ -104,20 +118,91 @@ function Lightbox({
       </AnimatePresence>
 
       {/* Thumbnail strip */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5 max-w-[90vw] overflow-x-auto pb-1 scrollbar-hide z-[110]">
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5 max-w-[90vw] overflow-x-auto pb-1 z-[110]"
+        style={{ scrollbarWidth: "none" }}
+      >
         {images.map((img, i) => (
           <button
             key={i}
             onClick={(e) => { e.stopPropagation(); setIndex(i); }}
-            className={`relative flex-shrink-0 w-12 h-9 rounded-md overflow-hidden border-2 transition-all duration-200 ${
-              i === index ? "border-amber-400 opacity-100" : "border-white/10 opacity-40 hover:opacity-70"
+            className={`relative flex-shrink-0 rounded-md overflow-hidden border-2 transition-all duration-200 ${
+              i === index
+                ? "w-14 h-10 border-amber-400 opacity-100"
+                : "w-11 h-8 border-white/10 opacity-35 hover:opacity-65 hover:border-white/25"
             }`}
             aria-label={`Thumbnail ${i + 1}`}
           >
+            {/* Thumbnails are small UI elements — fill+fill is fine here */}
             <CloudinaryImage src={img} alt="" fill crop="fill" className="object-cover" />
           </button>
         ))}
       </div>
+    </motion.div>
+  );
+}
+
+// ─── Gallery Card ─────────────────────────────────────────────────────────────
+/*
+  GALLERY GRID IMAGE STRATEGY
+  ─────────────────────────────────────────────────────────────────────────────
+  Each card has:
+  - A dark cinematic background
+  - crop="fit" so Cloudinary never clips the image
+  - object-contain so the browser never clips the image
+  - A fixed aspect-ratio container so the grid stays uniform
+
+  We alternate aspect ratios across the grid to create a professional
+  editorial/masonry feel while keeping rows visually balanced.
+  ─────────────────────────────────────────────────────────────────────────────
+*/
+function GalleryCard({
+  img,
+  index,
+  eventTitle,
+  onClick,
+}: {
+  img: string;
+  index: number;
+  eventTitle: string;
+  onClick: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ delay: Math.min(index * 0.04, 0.35), duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+      onClick={onClick}
+      className="group relative overflow-hidden rounded-xl cursor-zoom-in shadow-md hover:shadow-2xl transition-shadow duration-500"
+      style={{
+        background: "linear-gradient(145deg, #0f0d0a, #1a1612)",
+        aspectRatio: "4 / 3",
+      }}
+    >
+      {/* Ambient glow */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{ background: "radial-gradient(ellipse at center, rgba(201,122,6,0.05), transparent 70%)" }}
+        aria-hidden="true"
+      />
+
+      {/* Full image — no cropping */}
+      <CloudinaryImage
+        src={img}
+        alt={`${eventTitle} — photo ${index + 1}`}
+        fill
+        crop="fit"
+        className="object-contain transition-transform duration-700 group-hover:scale-[1.04] z-[1]"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+      />
+
+      {/* Hover overlay */}
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all duration-400 z-[2]" />
+
+      {/* Index badge */}
+      <span className="absolute bottom-2 right-2.5 text-white/55 text-[0.6rem] tracking-widest bg-black/35 backdrop-blur-sm px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-[3]">
+        {index + 1}
+      </span>
     </motion.div>
   );
 }
@@ -128,10 +213,9 @@ export default function EventPage({ params }: { params: Promise<{ slug: string }
   const resolvedParams = use(params);
   const event = events.find((e) => e.slug === resolvedParams.slug);
 
-  const [heroIndex, setHeroIndex]       = useState(0);
+  const [heroIndex, setHeroIndex]         = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  // Auto-advance hero slideshow
   useEffect(() => {
     if (!event) return;
     const interval = setInterval(() => {
@@ -149,62 +233,85 @@ export default function EventPage({ params }: { params: Promise<{ slug: string }
     <div className="min-h-screen pb-28 bg-[#FDFBF7]">
 
       {/* ── Hero Slideshow ──────────────────────────────────────────────────── */}
-      <div className="relative w-full h-[60vh] md:h-[80vh] overflow-hidden bg-gray-950">
+      <div className="relative w-full h-[60vh] md:h-[78vh] overflow-hidden bg-[#080604]">
+
         <AnimatePresence mode="popLayout">
           <motion.div
             key={heroIndex}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.5 }}
+            transition={{ duration: 1.4 }}
             className="absolute inset-0"
           >
-            {/* Blurred background */}
-            <div className="absolute inset-0 scale-125">
+            {/*
+              HERO IMAGE STRATEGY
+              Blurred fill background + sharp contained foreground.
+              The background gives a rich cinematic color wash.
+              The foreground shows the FULL image without any crop.
+            */}
+
+            {/* Blurred background (fills the frame with color) */}
+            <div className="absolute inset-0 scale-110">
               <CloudinaryImage
                 src={event.gallery[heroIndex] || event.coverImage}
                 alt=""
                 fill
                 crop="fill"
-                className="object-cover blur-[40px] opacity-40"
+                className="object-cover blur-2xl opacity-35 saturate-150"
               />
             </div>
 
-            {/* Crisp foreground image */}
-            <div className="absolute inset-0 pb-28 md:pb-36 pt-8 px-4">
+            {/* Crisp foreground — full image, no crop */}
+            <div className="absolute inset-0 px-6 md:px-16 pb-28 md:pb-36 pt-10">
               <CloudinaryImage
                 src={event.gallery[heroIndex] || event.coverImage}
                 alt={event.title}
                 fill
                 crop="fit"
                 priority={heroIndex === 0}
-                className="object-contain drop-shadow-2xl"
+                className="object-contain drop-shadow-[0_8px_40px_rgba(0,0,0,0.7)]"
               />
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/50 to-transparent z-10 pointer-events-none" />
+        {/* Bottom gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#080604] via-[#080604]/40 to-transparent z-10 pointer-events-none" />
+
+        {/* Slideshow dots */}
+        <div className="absolute bottom-20 md:bottom-24 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+          {event.gallery.slice(0, Math.min(event.gallery.length, 8)).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setHeroIndex(i)}
+              className={`rounded-full transition-all duration-400 ${
+                i === heroIndex ? "w-6 h-1.5 bg-amber-400" : "w-1.5 h-1.5 bg-white/25 hover:bg-white/50"
+              }`}
+              aria-label={`Slide ${i + 1}`}
+            />
+          ))}
+        </div>
 
         {/* Title */}
-        <div className="absolute inset-0 z-20 flex flex-col justify-end items-center pb-10 md:pb-16 px-6 pointer-events-none">
+        <div className="absolute inset-0 z-20 flex flex-col justify-end items-center pb-8 md:pb-12 px-6 pointer-events-none">
           <motion.h1
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-5xl md:text-7xl font-extrabold text-white text-center tracking-tight drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]"
-            style={{ fontFamily: "'Playfair Display', serif" }}
+            transition={{ delay: 0.35, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white text-center tracking-tight"
+            style={{ fontFamily: "'Playfair Display', serif", textShadow: "0 4px 24px rgba(0,0,0,0.8)" }}
           >
             {event.title}
           </motion.h1>
-          <p className="text-gray-400 text-sm mt-4 tracking-widest uppercase">
-            {event.gallery.length} photos{event.videoUrls.length > 0 ? ` · ${event.videoUrls.length} film${event.videoUrls.length > 1 ? "s" : ""}` : ""}
+          <p className="text-amber-400/70 text-xs mt-3 tracking-[0.28em] uppercase font-medium">
+            {event.gallery.length} photos
+            {event.videoUrls.length > 0 ? ` · ${event.videoUrls.length} film${event.videoUrls.length > 1 ? "s" : ""}` : ""}
           </p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 mt-20">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 mt-16 md:mt-20">
 
         {/* ── Gallery Grid ─────────────────────────────────────────────────── */}
         <motion.div
@@ -213,38 +320,35 @@ export default function EventPage({ params }: { params: Promise<{ slug: string }
           viewport={{ once: true }}
           className="mb-24"
         >
-          <h2
-            className="text-4xl font-bold mb-12 text-center text-gray-900"
-            style={{ fontFamily: "'Playfair Display', serif" }}
-          >
-            Gallery
-          </h2>
-
-          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
-            {event.gallery.map((img, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ delay: Math.min(index * 0.04, 0.4), duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                onClick={() => setLightboxIndex(index)}
-                className="relative break-inside-avoid rounded-xl overflow-hidden shadow-md group cursor-zoom-in bg-gray-200 aspect-[3/4]"
+          <div className="flex items-center gap-4 mb-12 justify-center">
+            <div className="h-px flex-1 max-w-[120px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
+            <div className="flex items-center gap-2.5">
+              <Images size={16} className="text-amber-500/60" />
+              <h2
+                className="text-3xl md:text-4xl font-bold text-gray-900"
+                style={{ fontFamily: "'Playfair Display', serif" }}
               >
-                <CloudinaryImage
-                  src={img}
-                  alt={`${event.title} — photo ${index + 1}`}
-                  fill
-                  crop="fill"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.07]"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
-                {/* Index badge */}
-                <span className="absolute bottom-2 right-2 text-white/50 text-[0.6rem] tracking-widest bg-black/30 backdrop-blur-sm px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {index + 1}
-                </span>
-              </motion.div>
+                Gallery
+              </h2>
+            </div>
+            <div className="h-px flex-1 max-w-[120px] bg-gradient-to-l from-transparent via-amber-500/30 to-transparent" />
+          </div>
+
+          {/*
+            GRID LAYOUT
+            3 columns on desktop, 2 on tablet, 1 on mobile.
+            Each card has a fixed 4:3 aspect ratio and uses crop=fit + object-contain
+            so EVERY image — portrait, landscape, square — displays fully without cropping.
+          */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
+            {event.gallery.map((img, index) => (
+              <GalleryCard
+                key={index}
+                img={img}
+                index={index}
+                eventTitle={event.title}
+                onClick={() => setLightboxIndex(index)}
+              />
             ))}
           </div>
         </motion.div>
@@ -257,14 +361,18 @@ export default function EventPage({ params }: { params: Promise<{ slug: string }
             viewport={{ once: true }}
             className="mb-20"
           >
-            <h2
-              className="text-4xl font-bold mb-12 text-center text-gray-900"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              Cinematic Highlights
-            </h2>
+            <div className="flex items-center gap-4 mb-12 justify-center">
+              <div className="h-px flex-1 max-w-[120px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
+              <h2
+                className="text-3xl md:text-4xl font-bold text-gray-900"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                Cinematic Highlights
+              </h2>
+              <div className="h-px flex-1 max-w-[120px] bg-gradient-to-l from-transparent via-amber-500/30 to-transparent" />
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {event.videoUrls.map((publicId, index) => (
                 <CloudinaryVideo
                   key={index}
