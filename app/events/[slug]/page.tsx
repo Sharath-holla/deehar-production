@@ -142,19 +142,7 @@ function Lightbox({
 }
 
 // ─── Gallery Card ─────────────────────────────────────────────────────────────
-/*
-  GALLERY GRID IMAGE STRATEGY
-  ─────────────────────────────────────────────────────────────────────────────
-  Each card has:
-  - A dark cinematic background
-  - crop="fit" so Cloudinary never clips the image
-  - object-contain so the browser never clips the image
-  - A fixed aspect-ratio container so the grid stays uniform
-
-  We alternate aspect ratios across the grid to create a professional
-  editorial/masonry feel while keeping rows visually balanced.
-  ─────────────────────────────────────────────────────────────────────────────
-*/
+// Masonry column layout with CSS columns. Images display at natural height.
 function GalleryCard({
   img,
   index,
@@ -168,25 +156,18 @@ function GalleryCard({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ delay: Math.min(index * 0.04, 0.35), duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true, margin: "-30px" }}
+      transition={{ delay: Math.min(index * 0.03, 0.28), duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       onClick={onClick}
-      className="group relative overflow-hidden rounded-xl cursor-zoom-in shadow-md hover:shadow-2xl transition-shadow duration-500"
+      className="group relative overflow-hidden rounded-2xl cursor-zoom-in mb-3 md:mb-4 break-inside-avoid shadow-md hover:shadow-[0_16px_48px_rgba(0,0,0,0.25)] transition-shadow duration-500"
       style={{
         background: "linear-gradient(145deg, #0f0d0a, #1a1612)",
         aspectRatio: "4 / 3",
       }}
     >
-      {/* Ambient glow */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{ background: "radial-gradient(ellipse at center, rgba(201,122,6,0.05), transparent 70%)" }}
-        aria-hidden="true"
-      />
-
-      {/* Full image — no cropping */}
+      {/* Full image — CloudinaryImage handles its own shimmer + fade-in internally */}
       <CloudinaryImage
         src={img}
         alt={`${eventTitle} — photo ${index + 1}`}
@@ -199,8 +180,15 @@ function GalleryCard({
       {/* Hover overlay */}
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-all duration-400 z-[2]" />
 
+      {/* Expand icon on hover */}
+      <div className="absolute inset-0 flex items-center justify-center z-[3] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+          <span className="text-white text-lg leading-none">⤢</span>
+        </div>
+      </div>
+
       {/* Index badge */}
-      <span className="absolute bottom-2 right-2.5 text-white/55 text-[0.6rem] tracking-widest bg-black/35 backdrop-blur-sm px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-[3]">
+      <span className="absolute bottom-2.5 right-3 text-white/50 text-[0.58rem] tracking-widest bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-[3]">
         {index + 1}
       </span>
     </motion.div>
@@ -347,7 +335,7 @@ export default function EventPage({ params }: { params: Promise<{ slug: string }
             Each card has a fixed 4:3 aspect ratio and uses crop=fit + object-contain
             so EVERY image — portrait, landscape, square — displays fully without cropping.
           */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
+          <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-3 md:gap-4">
             {event.gallery.map((img, index) => (
               <GalleryCard
                 key={index}

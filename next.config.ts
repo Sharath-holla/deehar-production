@@ -22,8 +22,9 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
 
     // ── Cache tuning ─────────────────────────────────────────────────────────
-    // Cloudinary images are CDN-cached already. 60 s keeps Next.js image cache
-    // in sync with Cloudinary purges while not hammering the origin.
+    // 60s keeps the Next.js image cache warm without being stale.
+    // To force fresh images after a Cloudinary re-upload, do a hard refresh
+    // (Ctrl+Shift+R) or run: rm -rf .next/cache/images
     minimumCacheTTL: 60,
 
     // ── Device sizes used by Next.js srcset generation ───────────────────────

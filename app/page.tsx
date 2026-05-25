@@ -8,6 +8,7 @@ import CloudinaryVideo from "@/components/CloudinaryVideo";
 import ThreeDCard from "@/components/ThreeDCard";
 import MagneticButton from "@/components/MagneticButton";
 import TextReveal from "@/components/TextReveal";
+import VideoGallery from "@/components/VideoGallery";
 import {
   Youtube,
   Mail,
@@ -791,6 +792,10 @@ export default function Home() {
           </div>
         ))}
       </section>
+
+      <div className="w-full bg-[#0c0a07] border-y border-white/5">
+        <VideoGallery />
+      </div>
 
       <section className="relative py-20 md:py-28 bg-[#FDFBF7] overflow-hidden">
         <div

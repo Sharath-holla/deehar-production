@@ -5,8 +5,9 @@ import "./globals.css";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useSpring, useMotionValue, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { Menu, X, Aperture } from "lucide-react";
+import ScrollRestoration from "@/components/ScrollRestoration";
 
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["300", "400", "500", "600"] });
 
@@ -306,6 +307,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="grain-overlay" aria-hidden="true" />
         {/* Scroll progress bar */}
         <ScrollProgress />
+        {/* Scroll restoration — preserves position when navigating back */}
+        <ScrollRestoration />
         {/* Navbar */}
         <Navbar />
         <main className="flex-grow">

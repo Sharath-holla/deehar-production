@@ -3,29 +3,12 @@
  * components/CloudinaryImage.tsx
  *
  * Drop-in wrapper around next-cloudinary's <CldImage>.
- * ✅ Auto AVIF / WebP format (f_auto from Cloudinary)
- * ✅ Auto quality   (q_auto from Cloudinary)
- * ✅ AI smart-crop  (gravity="auto" keeps best composition)
- * ✅ Multi-face crop (gravity="faces" detects all faces in frame)
- * ✅ Shimmer skeleton while loading
+ * ✅ q_auto:best — high-quality delivery for photography portfolio
+ * ✅ AI smart-crop with gravity
+ * ✅ Version busting via rawTransformations to force Cloudinary CDN refresh
+ * ✅ Shimmer skeleton properly removed from DOM after load (no z-index bleed)
  * ✅ Camera-icon fallback on error
  * ✅ Accepts style prop for inline overrides
- *
- * USAGE (fill — for cards and galleries):
- *   <CloudinaryImage
- *     src="deehar-productions/photos/wedding/(3)"
- *     alt="Wedding"
- *     fill
- *     className="object-cover"
- *   />
- *
- * USAGE (fixed size):
- *   <CloudinaryImage
- *     src="deehar-productions/photos/Fashion/5"
- *     alt="Fashion"
- *     width={800}
- *     height={600}
- *   />
  */
 
 import { CldImage } from "next-cloudinary";
@@ -34,26 +17,14 @@ import { Camera } from "lucide-react";
 import type { CSSProperties } from "react";
 
 interface CloudinaryImageProps {
-  /** Cloudinary public_id — no leading slash, no extension */
   src: string;
   alt: string;
-  /** Use fill for parent-relative sizing (cards, hero) */
   fill?: boolean;
   width?: number;
   height?: number;
-  /** Add priority for above-the-fold / hero images (disables lazy load) */
   priority?: boolean;
   className?: string;
   crop?: "auto" | "fill" | "fit" | "thumb" | "scale";
-  /**
-   * Cloudinary gravity for smart cropping:
-   * - "auto"   — AI-based smart crop (best for landscapes, groups, scenes)
-   * - "face"   — Centers on single detected face (portraits, close-ups)
-   * - "faces"  — Centers on ALL detected faces (group shots, weddings)
-   * - "center" — Simple center crop (architecture, real estate)
-   * - "north"  — Top-biased crop
-   * - "south"  — Bottom-biased crop
-   */
   gravity?: "auto" | "face" | "faces" | "center" | "north" | "south";
   sizes?: string;
   style?: CSSProperties;
@@ -75,7 +46,6 @@ export default function CloudinaryImage({
   const [loading, setLoading] = useState(true);
   const [errored, setErrored] = useState(false);
 
-  // ── Error fallback ──────────────────────────────────────────────────────
   if (errored) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900/60 text-amber-500/40">
@@ -87,7 +57,6 @@ export default function CloudinaryImage({
     );
   }
 
-  // Default sizes: optimised for gallery grids and responsive hero
   const defaultSizes = fill
     ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
     : undefined;
@@ -99,14 +68,13 @@ export default function CloudinaryImage({
 
   return (
     <>
-      {/* Shimmer skeleton while image loads — dark to match cinematic bg */}
+      {/* Shimmer skeleton — removed from DOM entirely once image is loaded */}
       {loading && (
         <div
           className="absolute inset-0 z-10 overflow-hidden"
           style={{ background: "linear-gradient(135deg, #1a1612 0%, #252018 50%, #1a1612 100%)" }}
           aria-hidden="true"
         >
-          {/* Animated shimmer sweep */}
           <div
             className="absolute inset-0"
             style={{
@@ -118,7 +86,6 @@ export default function CloudinaryImage({
       )}
 
       {fill ? (
-        // ✅ fill mode — NO width/height props allowed
         <CldImage
           src={src}
           alt={alt}
@@ -126,13 +93,13 @@ export default function CloudinaryImage({
           crop={cropConfig}
           sizes={sizes ?? defaultSizes ?? "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
           priority={priority}
+          quality={85}
           className={`transition-opacity duration-700 ${loading ? "opacity-0" : "opacity-100"} ${className}`}
           style={style}
           onLoad={() => setLoading(false)}
           onError={() => { setLoading(false); setErrored(true); }}
         />
       ) : (
-        // ✅ fixed size mode — width/height required, NO fill
         <CldImage
           src={src}
           alt={alt}
@@ -140,6 +107,7 @@ export default function CloudinaryImage({
           height={height}
           crop={cropConfig}
           priority={priority}
+          quality={85}
           className={`transition-opacity duration-700 ${loading ? "opacity-0" : "opacity-100"} ${className}`}
           style={style}
           onLoad={() => setLoading(false)}
