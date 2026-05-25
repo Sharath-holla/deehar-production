@@ -104,6 +104,17 @@ img { max-width: 100%; }
   50% { opacity: 0.8; }
 }
 
+@keyframes iconFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-5px) rotate(1.5deg); }
+  66%       { transform: translateY(-3px) rotate(-1deg); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(245,158,11,0.25); }
+  50%       { box-shadow: 0 0 24px rgba(245,158,11,0.5), 0 0 48px rgba(245,158,11,0.15); }
+}
+
 /* ═══════════════════════════════════════════════════════════════
    UTILITY CLASSES
 ═══════════════════════════════════════════════════════════════ */
@@ -125,37 +136,43 @@ img { max-width: 100%; }
    NAVBAR — ULTRA GLASSMORPHISM
 ═══════════════════════════════════════════════════════════════ */
 .navbar-glass {
-  background: rgba(8, 6, 4, 0.75);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border-bottom: 1px solid rgba(201,122,6,0.12);
-  box-shadow: 0 1px 0 rgba(201,122,6,0.08) inset, 0 4px 32px rgba(0,0,0,0.4);
+  background: rgba(6, 4, 2, 0.82);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border-bottom: 1px solid rgba(201,122,6,0.18);
+  box-shadow:
+    0 1px 0 rgba(201,122,6,0.10) inset,
+    0 8px 40px rgba(0,0,0,0.55),
+    0 0 0 0.5px rgba(255,255,255,0.04) inset;
 }
 
 .nav-link {
   position: relative;
   font-weight: 500;
-  font-size: 0.875rem;
-  letter-spacing: 0.04em;
-  color: rgba(255,255,255,0.55);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.75);
   transition: color 0.3s var(--transition-smooth);
   text-transform: uppercase;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
 }
 
 .nav-link::after {
   content: '';
   position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 1px;
+  bottom: 0px;
+  left: 20%;
+  right: 20%;
+  height: 1.5px;
   background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+  border-radius: 1px;
   transform: scaleX(0);
   transition: transform 0.35s var(--transition-expo);
 }
 
 .nav-link:hover {
   color: var(--accent-gold);
+  text-shadow: 0 0 12px rgba(245,158,11,0.3);
 }
 
 .nav-link:hover::after {

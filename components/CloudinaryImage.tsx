@@ -44,6 +44,13 @@ interface CloudinaryImageProps {
   priority?: boolean;
   className?: string;
   crop?: "auto" | "fill" | "fit" | "thumb" | "scale";
+  /**
+   * Cloudinary gravity for smart cropping:
+   * - "auto"   — AI-based smart crop (good for landscapes/events)
+   * - "face"   — Centers on detected faces (best for portraits/weddings)
+   * - "center" — Simple center crop
+   */
+  gravity?: "auto" | "face" | "faces" | "center" | "north" | "south";
   sizes?: string;
   style?: CSSProperties;
 }
@@ -57,6 +64,7 @@ export default function CloudinaryImage({
   priority = false,
   className = "",
   crop = "fill",
+  gravity = "auto",
   sizes,
   style,
 }: CloudinaryImageProps) {
@@ -96,7 +104,7 @@ export default function CloudinaryImage({
           src={src}
           alt={alt}
           fill
-          crop={{ type: crop, source: true }}
+          crop={{ type: crop, source: true, gravity }}
           sizes={sizes ?? defaultSizes ?? "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
           priority={priority}
           className={`transition-opacity duration-500 ${loading ? "opacity-0" : "opacity-100"} ${className}`}
@@ -111,7 +119,7 @@ export default function CloudinaryImage({
           alt={alt}
           width={width}
           height={height}
-          crop={{ type: crop, source: true }}
+          crop={{ type: crop, source: true, gravity }}
           priority={priority}
           className={`transition-opacity duration-500 ${loading ? "opacity-0" : "opacity-100"} ${className}`}
           style={style}

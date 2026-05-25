@@ -385,6 +385,13 @@ export default function Home() {
         <FloatingOrb className="w-[400px] h-[400px] top-10 left-1/4 bg-amber-500/7 z-0" delay={3} />
         <FloatingOrb className="w-[300px] h-[300px] bottom-1/4 left-8 bg-amber-700/8 z-0" delay={6} />
 
+        {/* Top gradient — ensures transparent navbar is always readable */}
+        <div
+          className="absolute top-0 left-0 right-0 h-40 z-[3] pointer-events-none"
+          style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 60%, transparent 100%)" }}
+          aria-hidden="true"
+        />
+
         <div className="hero-noise z-[1]" />
 
         <div
@@ -418,6 +425,7 @@ export default function Home() {
                 fill
                 priority
                 crop="fill"
+                gravity="face"
                 className="object-cover object-center"
               />
             </motion.div>
@@ -538,6 +546,7 @@ export default function Home() {
                     fill
                     priority
                     crop="fill"
+                    gravity="face"
                     className="object-cover"
                   />
                 </motion.div>
@@ -570,6 +579,7 @@ export default function Home() {
                 alt="Event preview"
                 fill
                 crop="fill"
+                gravity="face"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-black/18" />
